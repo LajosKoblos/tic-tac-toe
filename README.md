@@ -1,4 +1,5 @@
 # tic-tac-toe
+I've implemented the business logic on the backend side. For specification please see the tests.
 
 ## backend
 ```

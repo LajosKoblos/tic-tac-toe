@@ -126,7 +126,7 @@ describe('AppController', () => {
       }
     });
 
-    it('should return 400 when field is played', () => {
+    it('should return 400 when field is already played', () => {
       expect.assertions(2);
       jest.spyOn(randomService, 'getUUID')
         .mockImplementationOnce(() => "7bd817b8-797d-4a70-bb97-6c59bdb82c72");
@@ -145,6 +145,63 @@ describe('AppController', () => {
 
       try {
         appController.updateGame("7bd817b8-797d-4a70-bb97-6c59bdb82c72", {field: 0, state: FieldState.O})
+      } catch (error) {
+        console.log(error);
+        expect(error).toBeInstanceOf(BadRequestException);
+      }
+    });
+
+    it('should return 400 when game is over', () => {
+      expect.assertions(6);
+      jest.spyOn(randomService, 'getUUID')
+        .mockImplementationOnce(() => "7bd817b8-797d-4a70-bb97-6c59bdb82c72");
+      jest.spyOn(randomService, 'getPlayer')
+        .mockImplementationOnce(() => FieldState.X);
+      appService.createGame();
+      
+      expect(appController.updateGame("7bd817b8-797d-4a70-bb97-6c59bdb82c72", {field: 0, state: FieldState.X})).toStrictEqual(
+        [
+          FieldState.X, FieldState.Empty, FieldState.Empty,
+          FieldState.Empty, FieldState.Empty, FieldState.Empty,
+          FieldState.Empty, FieldState.Empty, FieldState.Empty,
+          FieldState.O,
+          FieldState.Empty
+        ]);
+      expect(appController.updateGame("7bd817b8-797d-4a70-bb97-6c59bdb82c72", {field: 3, state: FieldState.O})).toStrictEqual(
+        [
+          FieldState.X, FieldState.Empty, FieldState.Empty,
+          FieldState.O, FieldState.Empty, FieldState.Empty,
+          FieldState.Empty, FieldState.Empty, FieldState.Empty,
+          FieldState.X,
+          FieldState.Empty
+        ]);
+      expect(appController.updateGame("7bd817b8-797d-4a70-bb97-6c59bdb82c72", {field: 1, state: FieldState.X})).toStrictEqual(
+        [
+          FieldState.X, FieldState.X, FieldState.Empty,
+          FieldState.O, FieldState.Empty, FieldState.Empty,
+          FieldState.Empty, FieldState.Empty, FieldState.Empty,
+          FieldState.O,
+          FieldState.Empty
+        ]);
+      expect(appController.updateGame("7bd817b8-797d-4a70-bb97-6c59bdb82c72", {field: 4, state: FieldState.O})).toStrictEqual(
+        [
+          FieldState.X, FieldState.X, FieldState.Empty,
+          FieldState.O, FieldState.O, FieldState.Empty,
+          FieldState.Empty, FieldState.Empty, FieldState.Empty,
+          FieldState.X,
+          FieldState.Empty
+        ]);
+      expect(appController.updateGame("7bd817b8-797d-4a70-bb97-6c59bdb82c72", {field: 2, state: FieldState.X})).toStrictEqual(
+        [
+          FieldState.X, FieldState.X, FieldState.X,
+          FieldState.O, FieldState.O, FieldState.Empty,
+          FieldState.Empty, FieldState.Empty, FieldState.Empty,
+          FieldState.O,
+          FieldState.X
+        ]);
+
+      try {
+        appController.updateGame("7bd817b8-797d-4a70-bb97-6c59bdb82c72", {field: 5, state: FieldState.O})
       } catch (error) {
         console.log(error);
         expect(error).toBeInstanceOf(BadRequestException);

@@ -40,6 +40,7 @@ export class AppService {
 
   updateGame(id: string, updateGameDto: UpdateGameDto): Array<FieldState> {
     this.checkId(id);
+    this.checkGameOver(id);
     this.checkPlayer(id, updateGameDto);
     this.checkField(id, updateGameDto);
 
@@ -53,6 +54,12 @@ export class AppService {
   private checkId(id: string): void {
     if (!this.games.has(id)) {
       throw new NotFoundException();
+    }
+  }
+
+  private checkGameOver(id: string): void {
+    if (this.games.get(id)[10] != FieldState.Empty) {
+      throw new BadRequestException();
     }
   }
 

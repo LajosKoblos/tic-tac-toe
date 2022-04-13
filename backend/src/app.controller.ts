@@ -18,7 +18,7 @@ export class AppController {
   }
 
   @Put(':id')
-  updateGame(@Param('id') id: string, @Body() updateGameDto: UpdateGameDto): Array<FieldState> {
+  updateGame(@Param('id') id: string, @Body() updateGameDto: UpdateGameDto): Array<FieldState> {    
     return this.appService.updateGame(id, updateGameDto); 
   }
 }
